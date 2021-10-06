@@ -1,4 +1,6 @@
 
+from src.database import models
+from src import routes
 import config
 from flask import Flask, render_template, request
 from flask_restful import Api
@@ -13,9 +15,9 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 api = Api(app)
 
-SWAGGER_URL='/swagger' # это вместо постмана
-API_URL='/static/swagger.json'
-SWAGGERUI_BLUEPRINT=get_swaggerui_blueprint(
+SWAGGER_URL = '/swagger'  # это вместо постмана
+API_URL = '/static/swagger.json'
+SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
     SWAGGER_URL,
     API_URL,
     config={
@@ -34,25 +36,24 @@ def sql_debug(response):
         total_duration += q.duration
 
     print('=' * 80)
-    print(' SQL Queries - {0} Queries Executed in {1}ms'.format(len(queries), round(total_duration * 1000, 2)))
+    print(' SQL Queries - {0} Queries Executed in {1}ms'.format(
+        len(queries), round(total_duration * 1000, 2)))
     print('=' * 80)
 
     return response
 
 
 app.after_request(sql_debug)
-@app.route('/', methods =['GET', 'POST'])
+
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html') # обрабатываем отправку формы
+    return render_template('index.html')  # обрабатываем отправку формы
 
 
 @app.route('/greeting', methods=['POST'])
 def greeting():
-    name = request.form.get('name') # получаем данные и передаем шаблону
-    if not name: # серверная обработка пустой строки
+    name = request.form.get('name')  # получаем данные и передаем шаблону
+    if not name:  # серверная обработка пустой строки
         return 'Please enter a name', 400
     return render_template('greeting.html', name=name)
-
-
-from src import routes
-from src.database import models

@@ -7,5 +7,5 @@ class ActorSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Actor
         load_instance = True
-        include_fk=True
-    films= Nested('FilmSchema', many=True, exclude=('actors',))
+        include_fk = True
+    films = Nested('FilmSchema', many=True, exclude=('actors',))

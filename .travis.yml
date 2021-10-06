@@ -1,7 +1,9 @@
 language: python
 python: 
     - "3.9"
-
+ os: [
+    "windows"
+  ],
 before_install:
   - pip install pycodestyle
 

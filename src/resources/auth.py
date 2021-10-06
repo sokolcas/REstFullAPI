@@ -1,23 +1,24 @@
+from werkzeug.security import check_password_hash
+import jwt
+from flask import request, jsonify
+from sqlalchemy.exc import IntegrityError
+from marshmallow import ValidationError
+from src import db, app
+from src.schemas.users import UserSchema
+from src.database.models import User
+from functools import wraps
+import datetime
 from flask_restful import Resource
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), '..')))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import datetime
-from functools import wraps
+sys.path.insert(0, os.path.abspath(os.path.join(
+    os.path.dirname(os.path.dirname(__file__)), '..')))
+sys.path.insert(0, os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..')))
 
-from src.database.models import User
-from src.schemas.users import UserSchema
-from src import db, app
-
-from marshmallow import ValidationError
-from sqlalchemy.exc import IntegrityError
-from flask import request, jsonify
-import jwt
-from werkzeug.security import check_password_hash
 
 class AuthRegister(Resource):
-    user_schema= UserSchema()
+    user_schema = UserSchema()
 
     def post(self):
         try:
@@ -32,12 +33,13 @@ class AuthRegister(Resource):
             return {"message": "Such user exists"}, 409
         return self.user_schema.dump(user), 201
 
+
 class AuthLogin(Resource):
     def get(self):
         auth = request.authorization
         if not auth:
             return "", 401, {"WWW-Authenticate": "Basic realm='Authentication required'"}
-        user= User.find_user_by_username(auth.get('username', ''))
+        user = User.find_user_by_username(auth.get('username', ''))
         if not user or not check_password_hash(user.password, auth.get('password', '')):
             return "", 401, {"WWW-Authenticate": "Basic realm='Authentication required'"}
         token = jwt.encode(
@@ -53,6 +55,8 @@ class AuthLogin(Resource):
         )
 
 # напишем декоратор, чтобы определенные методы ресурса были доступны только аутентифицированными пользователями
+
+
 def token_required(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
@@ -60,8 +64,9 @@ def token_required(func):
         if not token:
             return "", 401, {"WWW-Authenticate": "Basic realm='Authentication required'"}
         try:
-            uuid = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])['user_id']
-        except (KeyError, jwt.ExpiredSignatureError): #значит время жизни токена
+            uuid = jwt.decode(token, app.config['SECRET_KEY'], algorithms=[
+                              "HS256"])['user_id']
+        except (KeyError, jwt.ExpiredSignatureError):  # значит время жизни токена
             return "", 401, {"WWW-Authenticate": "Basic realm='Authentication required'"}
         user = db.session.query(User).filter_by(uuid=uuid).first()
         user = User.find_user_by_uuid(uuid)
