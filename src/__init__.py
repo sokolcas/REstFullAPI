@@ -1,6 +1,5 @@
 
-from src.database import models
-from src import routes
+
 import config
 from flask import Flask, render_template, request
 from flask_restful import Api
@@ -57,3 +56,6 @@ def greeting():
     if not name:  # серверная обработка пустой строки
         return 'Please enter a name', 400
     return render_template('greeting.html', name=name)
+
+from src.database import models
+from src import routes

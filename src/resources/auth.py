@@ -3,9 +3,6 @@ import jwt
 from flask import request, jsonify
 from sqlalchemy.exc import IntegrityError
 from marshmallow import ValidationError
-from src import db, app
-from src.schemas.users import UserSchema
-from src.database.models import User
 from functools import wraps
 import datetime
 from flask_restful import Resource
@@ -15,6 +12,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(
     os.path.dirname(os.path.dirname(__file__)), '..')))
 sys.path.insert(0, os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..')))
+from src import db, app
+from src.schemas.users import UserSchema
+from src.database.models import User
 
 
 class AuthRegister(Resource):

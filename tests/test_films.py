@@ -2,12 +2,12 @@ from dataclasses import dataclass
 from unittest.mock import patch
 import json
 import http
-from src import app
+
 import os
 import sys
 sys.path.insert(0, os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..')))
-
+from src import app
 
 @dataclass
 class FakeFilm:

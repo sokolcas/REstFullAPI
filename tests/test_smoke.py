@@ -1,11 +1,10 @@
 import http
-from src import app
 import os
 import sys
 
 sys.path.insert(0, os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..')))
-
+from src import app
 
 def test_smoke():
     client = app.test_client()
